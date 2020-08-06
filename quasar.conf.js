@@ -6,11 +6,12 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 /* eslint-env node */
-
-module.exports = function (/* ctx */) {
+const path = require('path')
+module.exports = function(ctx) {
   return {
     // https://quasar.dev/quasar-cli/supporting-ts
     supportTS: false,
+    preFetch: true,
 
     // https://quasar.dev/quasar-cli/prefetch-feature
     // preFetch: true,
@@ -18,15 +19,10 @@ module.exports = function (/* ctx */) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
-    boot: [
-      
-      'axios',
-    ],
+    boot: ['axios'],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
-    css: [
-      'app.scss'
-    ],
+    css: ['app.scss'],
 
     // https://github.com/quasarframework/quasar/tree/dev/extras
     extras: [
@@ -39,7 +35,7 @@ module.exports = function (/* ctx */) {
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
       'roboto-font', // optional, you are not bound to it
-      'material-icons', // optional, you are not bound to it
+      'material-icons' // optional, you are not bound to it
     ],
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
@@ -54,42 +50,63 @@ module.exports = function (/* ctx */) {
       // transpileDependencies: [],
 
       // rtl: false, // https://quasar.dev/options/rtl-support
-      // preloadChunks: true,
-      // showProgress: false,
-      // gzip: true,
-      // analyze: true,
+      preloadChunks: true,
+      showProgress: true,
+      gzip: true,
+      analyze: true,
 
       // Options below are automatically set depending on the env, set them if you want to override
-      // extractCSS: false,
+      extractCSS: true,
 
       // https://quasar.dev/quasar-cli/handling-webpack
-      extendWebpack (cfg) {
-cfg.module.rules.push({
+      extendWebpack(cfg) {
+        cfg.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,
           loader: 'eslint-loader',
           exclude: /node_modules/
         })
+        cfg.resolve.alias = {
+          ...cfg.resolve.alias, // This adds the existing alias
+          // Add your own alias like this
+          '@': path.resolve(__dirname, './src')
+        }
       },
+      env: {
+        API: ctx.dev ? 'dev' : 'product'
+      }
     },
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
     devServer: {
       https: false,
       port: 8080,
-      open: true // opens browser window automatically
+      open: true, // opens browser window automatically
+      proxy: {
+        // '/**': {
+        //   target: 'http://healthtest.minshenglife.com/',
+        //   changeOrigin: true,
+        //   headers: {
+        //     Accept: 'application/json, text/plain',
+        //     'Content-Type': 'application/json',
+        //     'X-Requested-With': 'XMLHttpRequest'
+        //   },
+        //   pathRewrite: {},
+        //   onProxyReq: function() {}
+        // }
+      }
     },
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
       iconSet: 'material-icons', // Quasar icon set
-      lang: 'en-us', // Quasar language pack
+      lang: 'zh-hans', // Quasar language pack
       config: {},
 
       // Possible values for "importStrategy":
       // * 'auto' - (DEFAULT) Auto-import needed Quasar components & directives
       // * 'all'  - Manually specify what to import
-      importStrategy: 'all',
+      importStrategy: 'auto',
 
       // For special cases outside of where "auto" importStrategy can have an impact
       // (like functional components as one of the examples),
@@ -99,7 +116,7 @@ cfg.module.rules.push({
       // directives: [],
 
       // Quasar plugins
-      plugins: []
+      plugins: ['Cookies', 'LocalStorage', 'Notify', 'Dialog']
     },
 
     // animations: 'all', // --- includes all animations
@@ -116,9 +133,9 @@ cfg.module.rules.push({
       workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
       workboxOptions: {}, // only for GenerateSW
       manifest: {
-        name: `Quasar App`,
-        short_name: `Quasar App`,
-        description: `A Quasar Framework app`,
+        name: 'Quasar App',
+        short_name: 'Quasar App',
+        description: 'A Quasar Framework app',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
@@ -169,13 +186,11 @@ cfg.module.rules.push({
 
       packager: {
         // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
-
         // OS X / Mac App Store
         // appBundleId: '',
         // appCategoryType: '',
         // osxSign: '',
         // protocol: 'myapp://path',
-
         // Windows only
         // win32metadata: { ... }
       },
@@ -189,7 +204,7 @@ cfg.module.rules.push({
       // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration
       nodeIntegration: true,
 
-      extendWebpack (/* cfg */) {
+      extendWebpack(/* cfg */) {
         // do something with Electron main process Webpack cfg
         // chainWebpack also available besides this extendWebpack
       }
