@@ -1,12 +1,22 @@
+const UserLayout = () => import('layouts/UserLayout.vue')
+const Login = () => import('pages/Login.vue')
+
+const ManageLayout = () => import('layouts/ManageLayout.vue')
+const Index = () => import('pages/Index.vue')
 const routes = [
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/Index.vue') }]
+    component: UserLayout,
+    children: [
+      { path: '', redirect: { name: 'login' } },
+      { path: 'login', name: 'login', component: Login }
+    ]
   },
-
-  // Always leave this as last one,
-  // but you can also remove it
+  {
+    path: '/manage',
+    component: ManageLayout,
+    children: [{ path: '', component: Index }]
+  },
   {
     path: '*',
     component: () => import('pages/Error404.vue')

@@ -37,3 +37,7 @@
   "editor.formatOnType": true,
   "editor.formatOnSave": true,
 ```
+
+4、接口`api`在`src/boot/api.js`里面进行集中管理，然后需要的时候使用`this.$api.xx`来进行接口调用，给每个接口做好注释。
+
+5、常用的工具函数可以在`src/common/util.js`里面定义。
