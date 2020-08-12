@@ -10,9 +10,9 @@
 
         <q-card-section class="col-md-6 col-xs-12 q-mt-xs q-pa-xl`">
           <div class="text-h5 text-primary q-mb-xs">登录</div>
-          <q-form @submit="onSubmit" class="login-form my-form q-mt-lg">
+          <q-form @submit="handleSubmit" class="login-form my-form q-mt-lg">
             <q-input
-              dense
+              clearable
               v-model.trim="form.username"
               placeholder="账号"
               :rules="[(val) => (val && val.length > 0) || '请输入用户账号']"
@@ -22,14 +22,18 @@
               </template>
             </q-input>
             <q-input
-              dense
-              type="password"
+              :type="isPwd ? 'password' : 'text'"
+              clearable
               v-model.trim="form.password"
               placeholder="密码"
               :rules="[(val) => (val && val.length > 0) || '请输入登录密码']"
             >
               <template v-slot:prepend>
-                <q-icon name="vpn_key" />
+                <q-icon
+                  :name="isPwd ? 'visibility_off' : 'visibility'"
+                  class="cursor-pointer"
+                  @click="isPwd = !isPwd"
+                />
               </template>
             </q-input>
             <div class="column q-gutter-y-md q-mt-none">
@@ -73,13 +77,14 @@ export default {
       username: '',
       password: '',
       rememberMe: false
-    }
+    },
+    isPwd: true
   }),
   mounted() {
     this.form.username = this.$q.localStorage.getItem('username') || ''
   },
   methods: {
-    onSubmit() {
+    handleSubmit() {
       const { rememberMe, username } = this.form
       rememberMe
         ? this.$q.localStorage.set('username', username)

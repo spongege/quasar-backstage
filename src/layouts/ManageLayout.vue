@@ -47,7 +47,7 @@
           :key="index"
           icon="assignment"
           :label="item.title"
-          :default-opened="activeIndex.split('-')[0] == index"
+          :default-opened="+activeIndex.split('-')[0] === index"
           header-class="text-primary"
         >
           <q-item
@@ -168,7 +168,9 @@ export default {
           title: '确认',
           message: '你想登出账户吗?',
           cancel: true,
-          persistent: true
+          persistent: true,
+          transitionShow: 'flip-down',
+          transitionHide: 'flip-up'
         })
         .onOk(() => {
           this.$router.push('/')
